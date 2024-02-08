@@ -25,6 +25,7 @@ We have used the following datasets in our experiments:
 conda create -n PAKDD-481 python=3.8
 conda activate PAKDD-481
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 # install pytorch
+conda install pyg -c pyg # install pytorch geometric
 pip install -r requirements.txt
 ```
 

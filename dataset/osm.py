@@ -3,11 +3,11 @@ import numpy as np
 import torch
 from torch_geometric.data import Data, InMemoryDataset
 
-from src.iid.utils.nx_graph_to_dataset import (
+from utils.nx_graph_to_dataset import (
     clean_networkx_node_keys,
     convert_networkx_graph_to_index,
 )
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger()
 

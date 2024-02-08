@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from torch_geometric.data import Data, InMemoryDataset, download_url
 
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger(logger_name="root")
 

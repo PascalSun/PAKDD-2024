@@ -4,8 +4,8 @@ import pandas as pd
 from imblearn.over_sampling import SMOTE, RandomOverSampler
 from sklearn.model_selection import train_test_split
 
-from src.traffic.ml_base import MLTrainBase
-from src.utils.logger import get_logger
+from traffic.ml_base import MLTrainBase
+from utils.logger import get_logger
 
 logger = get_logger()
 

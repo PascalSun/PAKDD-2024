@@ -6,11 +6,11 @@ import pandas as pd
 import torch
 from torch_geometric.data import Data, InMemoryDataset
 
-from src.iid.utils.nx_graph_to_dataset import (
+from utils.nx_graph_to_dataset import (
     clean_networkx_node_keys,
     convert_networkx_graph_to_index,
 )
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger()
 
@@ -187,7 +187,7 @@ class MitchamDataset(InMemoryDataset):
                         self.graph.add_node(target_node, **empty_property_dict)
 
                 if self.graph.has_node(target_node) and self.graph.has_node(
-                    source_node
+                        source_node
                 ):
                     self.graph.add_edge(source_node, target_node)
 

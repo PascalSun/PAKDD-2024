@@ -1,4 +1,4 @@
-from src.iid.utils.constants import DataSetEnum
+from utils.constants import DataSetEnum
 
 DATASET_LABELS_MAPPING = {
     DataSetEnum.Cora.value: {

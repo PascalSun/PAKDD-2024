@@ -5,12 +5,12 @@ import torch
 import torch.nn as nn
 from torch_geometric.datasets import Planetoid
 
-from src.iid.models.ML import GraphMLTrain
-from src.iid.utils import plot_metrics
-from src.iid.utils.constants import MLDefaultSettings
-from src.utils.constants import DATA_DIR, REPORT_DIR
-from src.utils.logger import get_logger
-from src.utils.to_json_file import to_json_file
+from models.ML import GraphMLTrain
+from utils import plot_metrics
+from utils.constants import MLDefaultSettings
+from utils.constants import DATA_DIR, REPORT_DIR
+from utils.logger import get_logger
+from utils.to_json_file import to_json_file
 
 logger = get_logger()
 

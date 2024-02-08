@@ -2,7 +2,7 @@ import datetime
 import logging
 from typing import Optional
 
-from src.utils.constants import LOG_DIR
+from utils.constants import LOG_DIR
 
 
 def get_logger(logger_name: Optional[str] = None, stream: bool = True):

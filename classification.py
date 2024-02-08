@@ -16,20 +16,20 @@ from torch_geometric.nn import Node2Vec  # noqa
 from torch_geometric.nn import SAGEConv  # noqa
 from torch_geometric.utils import to_networkx
 
-from src.iid.dataset.load_datasets import load_dataset
-from src.iid.dataset.travel import TRAVELDataset
-from src.iid.dimension_reduction import dimension_reduction
-from src.iid.models.GAE import train_gae
-from src.iid.models.GCN import GCNEmb, GCNTask
-from src.iid.models.GRAPH_AG import GraphAGEmb
-from src.iid.models.GRAPH_SAGE import GraphSAGEEmb, GraphSAGETask
-from src.iid.models.ML import GraphMLTrain
-from src.iid.utils import (
+from dataset.load_datasets import load_dataset
+from dataset.travel import TRAVELDataset
+from dimension_reduction import dimension_reduction
+from models.GAE import train_gae
+from models.GCN import GCNEmb, GCNTask
+from models.GRAPH_AG import GraphAGEmb
+from models.GRAPH_SAGE import GraphSAGEEmb, GraphSAGETask
+from models.ML import GraphMLTrain
+from utils import (
     convert_networkx_to_torch_graph_with_centrality_features,
     evaluate_model,
     plot_metrics,
 )
-from src.iid.utils.constants import (
+from utils.constants import (
     DataSetEnum,
     DataSetModel,
     GAEEncoderEnum,
@@ -40,12 +40,12 @@ from src.iid.utils.constants import (
     Node2VecParamModeEnum,
     TravelDatasetName,
 )
-from src.iid.utils.split_data import split_data
-from src.utils.constants import DATA_DIR, REPORT_DIR
-from src.utils.logger import get_logger
-from src.utils.plt_tsne import plot_tsne
-from src.utils.timer import timer
-from src.utils.to_json_file import to_json_file
+from utils.split_data import split_data
+from utils.constants import DATA_DIR, REPORT_DIR
+from utils.logger import get_logger
+from utils.plt_tsne import plot_tsne
+from utils.timer import timer
+from utils.to_json_file import to_json_file
 
 # set seed
 seed = 42
@@ -206,8 +206,8 @@ def load_and_preprocess_data(data_dir, dataset_name, arguments):  # noqa
         dataset = load_dataset(dataset_name)
 
     if (
-        arguments.dataset.lower()
-        == DataSetEnum.AttributedGraphDataset_Flickr.value.lower()
+            arguments.dataset.lower()
+            == DataSetEnum.AttributedGraphDataset_Flickr.value.lower()
     ):
         dataset.data.x = dataset.data.x.to_dense()
     # for the dataset with test/validation/train split
@@ -264,7 +264,7 @@ def load_and_preprocess_data(data_dir, dataset_name, arguments):  # noqa
 
     # preprocess the graph to generate a data with centrality features
     with timer(
-        logger, "Preprocess the graph to generate a data with centrality features"
+            logger, "Preprocess the graph to generate a data with centrality features"
     ):
         graph_metrics_dir = data_dir / dataset.name / "graph_metrics"
         if not graph_metrics_dir.exists():
@@ -297,7 +297,7 @@ def load_and_preprocess_data(data_dir, dataset_name, arguments):  # noqa
                         betweenness[node] = 0
                     else:
                         betweenness[node] = (value - min_betweenness) / (
-                            max_betweenness - min_betweenness
+                                max_betweenness - min_betweenness
                         )
 
                 with open(graph_metrics_dir / "betweenness.pickle", "wb") as handle:
@@ -318,11 +318,11 @@ def load_and_preprocess_data(data_dir, dataset_name, arguments):  # noqa
 
 
 def handle_feature_centrality_model(
-    arguments,
-    ml_default_settings,
-    dataset_with_centrality,
-    report_dir,
-    label_list,
+        arguments,
+        ml_default_settings,
+        dataset_with_centrality,
+        report_dir,
+        label_list,
 ):
     logger.info("Feature centrality model")
     feature_centrality_df = pd.DataFrame(dataset_with_centrality.data.x.numpy())
@@ -356,7 +356,7 @@ def handle_feature_centrality_model(
 
 
 def handle_feature_1433_model(
-    arguments, ml_default_settings, dataset, report_dir, label_list
+        arguments, ml_default_settings, dataset, report_dir, label_list
 ):
     logger.info("Feature 1433 model")
     try:
@@ -391,7 +391,7 @@ def handle_feature_1433_model(
 
 
 def handle_random_input_model(
-    arguments, ml_default_settings, dataset, report_dir, label_list
+        arguments, ml_default_settings, dataset, report_dir, label_list
 ):
     logger.info("Random input model")
     if arguments.start_dim > arguments.end_dim:
@@ -446,8 +446,8 @@ def handle_random_input_model(
             y_title=metric_name.upper(),
             metric_name=metric_name,
             filename=report_dir
-            / arguments.model
-            / f"{arguments.model}-dim-{metric_name}.png",
+                     / arguments.model
+                     / f"{arguments.model}-dim-{metric_name}.png",
         )
 
     to_json_file(
@@ -458,14 +458,14 @@ def handle_random_input_model(
 
 
 def handle_graph_sage_model(
-    arguments,
-    ml_default_settings,
-    dataset,
-    dataset_with_centrality,
-    report_dir,
-    label_list,
-    label_dict,
-    device,
+        arguments,
+        ml_default_settings,
+        dataset,
+        dataset_with_centrality,
+        report_dir,
+        label_list,
+        label_dict,
+        device,
 ):
     """
     We will have three different models for GraphSAGE:
@@ -575,10 +575,10 @@ def handle_graph_sage_model(
                 graph_sage_emb_df,
                 title=f"GraphSAGE Unsupervised Learning with {emb_dim} dimensions",
                 filename=report_dir
-                / arguments.model
-                / arguments.graph_sage_dataset_type
-                / str(len(graph_sage_hidden_dim))
-                / f"{arguments.model}-dim-{emb_dim}.png",
+                         / arguments.model
+                         / arguments.graph_sage_dataset_type
+                         / str(len(graph_sage_hidden_dim))
+                         / f"{arguments.model}-dim-{emb_dim}.png",
             )
             graph_sage_emb_model = GraphMLTrain(
                 graph_sage_emb_df,
@@ -618,10 +618,10 @@ def handle_graph_sage_model(
                 y_title=metric_name.upper(),
                 metric_name=metric_name,
                 filename=report_dir
-                / arguments.model
-                / arguments.graph_sage_dataset_type
-                / str(len(graph_sage_hidden_dim))
-                / f"{arguments.model}-dim-{metric_name}.png",
+                         / arguments.model
+                         / arguments.graph_sage_dataset_type
+                         / str(len(graph_sage_hidden_dim))
+                         / f"{arguments.model}-dim-{metric_name}.png",
             )
         to_json_file(
             graph_sage_unsupervised_performance,
@@ -635,14 +635,14 @@ def handle_graph_sage_model(
 
 
 def handle_gcn_model(
-    arguments: argparse.Namespace,
-    ml_default_settings,
-    dataset,
-    dataset_with_centrality,
-    report_dir,
-    label_list,
-    label_dict,
-    device,
+        arguments: argparse.Namespace,
+        ml_default_settings,
+        dataset,
+        dataset_with_centrality,
+        report_dir,
+        label_list,
+        label_dict,
+        device,
 ):
     """
     GCN Classification
@@ -728,10 +728,10 @@ def handle_gcn_model(
                 gcn_emb_df,
                 title=f"GCN Unsupervised Learning with {emb_dim} dimensions",
                 filename=report_dir
-                / arguments.model
-                / arguments.gcn_dataset_type
-                / str(len(gcn_hidden_dim))
-                / f"{arguments.model}-dim-{emb_dim}.png",
+                         / arguments.model
+                         / arguments.gcn_dataset_type
+                         / str(len(gcn_hidden_dim))
+                         / f"{arguments.model}-dim-{emb_dim}.png",
             )
 
             gcn_emb_model = GraphMLTrain(
@@ -772,10 +772,10 @@ def handle_gcn_model(
                 y_title=metric_name.upper(),
                 metric_name=metric_name,
                 filename=report_dir
-                / arguments.model
-                / arguments.gcn_dataset_type
-                / str(len(gcn_hidden_dim))
-                / f"{arguments.model}-dim-{metric_name}.png",
+                         / arguments.model
+                         / arguments.gcn_dataset_type
+                         / str(len(gcn_hidden_dim))
+                         / f"{arguments.model}-dim-{metric_name}.png",
             )
         to_json_file(
             gcn_unsupervised_performance,
@@ -789,13 +789,13 @@ def handle_gcn_model(
 
 
 def handle_node2vec_model(
-    arguments: argparse.Namespace,
-    ml_default_settings,
-    dataset,
-    report_dir,
-    label_list,
-    label_dict: dict,
-    device: torch.device = torch.device("cpu"),
+        arguments: argparse.Namespace,
+        ml_default_settings,
+        dataset,
+        report_dir,
+        label_list,
+        label_dict: dict,
+        device: torch.device = torch.device("cpu"),
 ):
     # DISCUSS: why is this one so good?
     """
@@ -926,9 +926,9 @@ def handle_node2vec_model(
             emb_df=node2vec_embeddings_df,
             title=f"{arguments.model.upper()}/{node2vec_performance_key.upper()}/{performance_key_value}",
             filename=report_dir
-            / arguments.model
-            / node2vec_performance_key
-            / f"{arguments.model}-{node2vec_performance_key}-{performance_key_value}.png",
+                     / arguments.model
+                     / node2vec_performance_key
+                     / f"{arguments.model}-{node2vec_performance_key}-{performance_key_value}.png",
             label_int_2_str=label_dict,
         )
         # train classification
@@ -978,9 +978,9 @@ def handle_node2vec_model(
             y_title=metric_name.upper(),
             metric_name=metric_name,
             filename=report_dir
-            / arguments.model
-            / node2vec_performance_key
-            / f"{arguments.model}-{node2vec_performance_key}-{metric_name}.png",
+                     / arguments.model
+                     / node2vec_performance_key
+                     / f"{arguments.model}-{node2vec_performance_key}-{metric_name}.png",
         )
     to_json_file(
         node2vec_unsupervised_performance,
@@ -993,14 +993,14 @@ def handle_node2vec_model(
 
 
 def handle_gae_model(
-    arguments: argparse.Namespace,
-    ml_default_settings,
-    dataset,
-    dataset_with_centrality,
-    report_dir,
-    label_list,
-    label_dict: Optional[dict] = None,
-    device: torch.device = torch.device("cpu"),
+        arguments: argparse.Namespace,
+        ml_default_settings,
+        dataset,
+        dataset_with_centrality,
+        report_dir,
+        label_list,
+        label_dict: Optional[dict] = None,
+        device: torch.device = torch.device("cpu"),
 ):
     logger.info("GAE Training")
     if arguments.start_dim > arguments.end_dim:
@@ -1039,10 +1039,10 @@ def handle_gae_model(
                     emb_df=gae_gcn_embeddings,
                     title=tsne_title,
                     filename=report_dir
-                    / arguments.model
-                    / arguments.gae_encoder
-                    / arguments.gae_feature
-                    / f"{arguments.model}-{arguments.gae_encoder}-{arguments.gae_feature}-{emb_dim}.png",
+                             / arguments.model
+                             / arguments.gae_encoder
+                             / arguments.gae_feature
+                             / f"{arguments.model}-{arguments.gae_encoder}-{arguments.gae_feature}-{emb_dim}.png",
                     label_int_2_str=label_dict,
                 )
 
@@ -1054,9 +1054,9 @@ def handle_gae_model(
                     embedding_df=gae_gcn_embeddings,
                     label_dict=label_dict,
                     report_dir=report_dir
-                    / arguments.model
-                    / arguments.gae_encoder
-                    / "DR",
+                               / arguments.model
+                               / arguments.gae_encoder
+                               / "DR",
                 )
             # save the embedding to files
             logger.info("saving the csv")
@@ -1117,10 +1117,10 @@ def handle_gae_model(
                 y_title=metric_name.upper(),
                 metric_name=metric_name,
                 filename=report_dir
-                / arguments.model
-                / arguments.gae_encoder
-                / arguments.gae_feature
-                / f"tsne-{arguments.model}-{arguments.gae_encoder}-{arguments.gae_feature}-dim-{metric_name}.png",
+                         / arguments.model
+                         / arguments.gae_encoder
+                         / arguments.gae_feature
+                         / f"tsne-{arguments.model}-{arguments.gae_encoder}-{arguments.gae_feature}-dim-{metric_name}.png",
             )
         to_json_file(
             gae_gcn_unsupervised_performance,
@@ -1167,19 +1167,19 @@ def handle_gae_model(
                     embedding_df=gae_graph_sage_embeddings,
                     label_dict=label_dict,
                     report_dir=report_dir
-                    / arguments.model
-                    / arguments.gae_encoder
-                    / "DR",
+                               / arguments.model
+                               / arguments.gae_encoder
+                               / "DR",
                 )
             tsne_title = f"TSNE of {arguments.model.upper()}-{arguments.gae_encoder.upper()}-{arguments.gae_feature.upper()}-{emb_dim}"  # noqa
             plot_tsne(
                 emb_df=gae_graph_sage_embeddings,
                 title=tsne_title,
                 filename=report_dir
-                / arguments.model
-                / arguments.gae_encoder
-                / arguments.gae_feature
-                / f"tsne-{arguments.model}-{arguments.gae_encoder}-{arguments.gae_feature}-dim-{emb_dim}.png",
+                         / arguments.model
+                         / arguments.gae_encoder
+                         / arguments.gae_feature
+                         / f"tsne-{arguments.model}-{arguments.gae_encoder}-{arguments.gae_feature}-dim-{emb_dim}.png",
                 label_int_2_str=label_dict,
             )
             # train classification
@@ -1224,10 +1224,10 @@ def handle_gae_model(
                 y_title=metric_name.upper(),
                 metric_name=metric_name,
                 filename=report_dir
-                / arguments.model
-                / arguments.gae_encoder
-                / arguments.gae_feature
-                / f"{arguments.model}-{arguments.gae_encoder}-{arguments.gae_feature}-dim-{metric_name}.png",
+                         / arguments.model
+                         / arguments.gae_encoder
+                         / arguments.gae_feature
+                         / f"{arguments.model}-{arguments.gae_encoder}-{arguments.gae_feature}-dim-{metric_name}.png",
             )
         to_json_file(
             gae_graph_sage_unsupervised_performance,
@@ -1241,14 +1241,14 @@ def handle_gae_model(
 
 
 def handle_graph_ag_model(
-    arguments: argparse.Namespace,
-    ml_default_settings,
-    dataset,
-    # dataset_with_centrality,
-    report_dir,
-    label_list,
-    label_dict: Optional[dict] = None,
-    device: torch.device = torch.device("cpu"),
+        arguments: argparse.Namespace,
+        ml_default_settings,
+        dataset,
+        # dataset_with_centrality,
+        report_dir,
+        label_list,
+        label_dict: Optional[dict] = None,
+        device: torch.device = torch.device("cpu"),
 ):
     logger.info("Model: Graph Analysis")
     # add the dataset.data.x to the graph_ag_embeddings
@@ -1288,8 +1288,8 @@ def handle_graph_ag_model(
             emb_df=graph_ag_embeddings,
             title="Graph AG Model with feature TSNE",
             filename=report_dir
-            / arguments.model
-            / f"{arguments.model}-feature-{dim}.png",
+                     / arguments.model
+                     / f"{arguments.model}-feature-{dim}.png",
             label_int_2_str=label_dict,
         )
         graph_age_ml_model = GraphMLTrain(
@@ -1330,7 +1330,7 @@ def handle_graph_ag_model(
             y_title=metric_name.upper(),
             metric_name=metric_name,
             filename=report_dir
-            / arguments.model
-            / f"{arguments.model}-dim-{metric_name}.png",
+                     / arguments.model
+                     / f"{arguments.model}-dim-{metric_name}.png",
         )
     return graph_ag_performance
