@@ -11,18 +11,18 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger()
 
 
 def evaluate_model(
-    model,
-    dataset,
-    title: str = None,
-    label_dict: Optional[Dict] = None,
-    filename: Optional[Path] = None,
-    plot_it: bool = False,
+        model,
+        dataset,
+        title: str = None,
+        label_dict: Optional[Dict] = None,
+        filename: Optional[Path] = None,
+        plot_it: bool = False,
 ) -> dict:
     """
     This is used to evaluate torch NN models.
@@ -90,11 +90,11 @@ def evaluate_model(
 
 
 def plot_confusion_matrix(
-    display_labels: List,
-    cms: List,
-    title: str,
-    filename: str = None,
-    plot_it: bool = False,
+        display_labels: List,
+        cms: List,
+        title: str,
+        filename: str = None,
+        plot_it: bool = False,
 ):
     """
     Plot confusion matrix, this is set to the test/val/train/all split confusion matrix.

@@ -2,20 +2,20 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.iid.models.TabularEncoder import TabularEncoder
-from src.utils.logger import get_logger
-from src.utils.plt_tsne import plot_tsne
-from src.utils.timer import timer
+from models.TabularEncoder import TabularEncoder
+from utils.logger import get_logger
+from utils.plt_tsne import plot_tsne
+from utils.timer import timer
 
 logger = get_logger()
 
 
 def dimension_reduction(
-    arguments,
-    dataset,
-    embedding_df: pd.DataFrame,
-    label_dict: dict,
-    report_dir: Path,
+        arguments,
+        dataset,
+        embedding_df: pd.DataFrame,
+        label_dict: dict,
+        report_dir: Path,
 ):
     """
     Dimension reduction for the features

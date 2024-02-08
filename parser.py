@@ -1,7 +1,7 @@
 import argparse
 from typing import List, Optional
 
-from src.iid.utils.constants import (
+from utils.constants import (
     GAEEncoderEnum,
     GAEFeatureEnum,
     GraphSAGEAggrEnum,

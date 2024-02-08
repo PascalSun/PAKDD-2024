@@ -16,4 +16,16 @@ We have used the following datasets in our experiments:
 
 ## Reproduce the Results
 
+### Setup
+
+1. Clone the repository
+2. Setup the conda environment
+
+```bash
+conda create -n PAKDD-481 python=3.8
+conda activate PAKDD-481
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 # install pytorch
+pip install -r requirements.txt
+```
+
 ## Citation

@@ -2,9 +2,9 @@ import random
 
 import torch
 
-from src.iid.classification import process
-from src.iid.parser import parse_args
-from src.utils.logger import get_logger
+from classification import process
+from parser import parse_args
+from utils.logger import get_logger
 
 # set seed
 seed = 42

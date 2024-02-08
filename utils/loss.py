@@ -2,14 +2,14 @@ import torch
 import torch.nn.functional as F
 from torch_geometric.utils import dense_to_sparse, to_dense_adj
 
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger()
 EPS = 1e-15
 
 
 def reconstruct_loss(
-    emb, edge_index, nx_graph=None, negative_samples_no=None, neg_hops: int = 2
+        emb, edge_index, nx_graph=None, negative_samples_no=None, neg_hops: int = 2
 ):
     """
     we first compute the loss for positive edges, and then sample a number of negative edges and compute the loss for them as well.
@@ -145,8 +145,8 @@ def n_hopway_edge_index_cal(edge_index, num_nodes, n):
 
     # only select part of the edge_index
     n_hopway_edge_index = n_hopway_edge_index[
-        :, n_hopway_edge_index[0] != n_hopway_edge_index[1]
-    ]
+                          :, n_hopway_edge_index[0] != n_hopway_edge_index[1]
+                          ]
     # random select 30 samples from the edge_index
     # n_hopway_edge_index = n_hopway_edge_index[
     #     :, torch.randperm(n_hopway_edge_index.shape[1])[:30]

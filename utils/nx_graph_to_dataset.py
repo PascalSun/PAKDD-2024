@@ -5,7 +5,7 @@ import torch
 from networkx import Graph
 from torch_geometric.data import Data
 
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger()
 
@@ -47,10 +47,10 @@ def convert_networkx_graph_to_index(graph):
 
 
 def convert_networkx_to_torch_graph_with_centrality_features(
-    nx_graph: Graph,
-    degree_df: pd.DataFrame,
-    betweenness_df: pd.DataFrame,
-    y_field: str = "y",
+        nx_graph: Graph,
+        degree_df: pd.DataFrame,
+        betweenness_df: pd.DataFrame,
+        y_field: str = "y",
 ):
     """
     TODO: this function has some problem, need to meet the standard from geometric package

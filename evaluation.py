@@ -12,8 +12,8 @@ import plotly.graph_objects as go
 from skimage.metrics import structural_similarity as ssim
 from sklearn.metrics.pairwise import cosine_similarity
 
-from src.utils.constants import REPORT_DIR
-from src.utils.logger import get_logger
+from utils.constants import REPORT_DIR
+from utils.logger import get_logger
 
 DATASETS = [
     "Mitcham",

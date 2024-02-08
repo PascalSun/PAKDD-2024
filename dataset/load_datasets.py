@@ -23,12 +23,12 @@ from torch_geometric.datasets import (  # Entities
     Yelp,
 )
 
-from src.iid.dataset.mitcham import MitchamDataset
-from src.iid.dataset.osm import OSMDataset
-from src.iid.graph_metrics.constants import DATASET_LABELS_MAPPING
-from src.iid.utils.constants import DataSetEnum
-from src.utils.constants import DATA_DIR
-from src.utils.logger import get_logger
+from dataset.mitcham import MitchamDataset
+from dataset.osm import OSMDataset
+from graph_metrics.constants import DATASET_LABELS_MAPPING
+from utils.constants import DataSetEnum
+from utils.constants import DATA_DIR
+from utils.logger import get_logger
 
 IGNORED_DATASET = [
     DataSetEnum.AttributedGraphDataset_TWeibo.value,

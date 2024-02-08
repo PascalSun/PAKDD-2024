@@ -3,6 +3,30 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
+import os
+from pathlib import Path
+
+RAW = "raw"
+DATA = "data"
+REPORTS = "reports"
+MODELS = "models"
+
+PROJECT_DIR: Path = Path(os.path.dirname(os.path.abspath(__file__))).parent.parent
+
+TEMP_OUTPUT_DIR = Path("/tmp")
+
+LOG_DIR: Path = PROJECT_DIR / "logs"
+
+DATA_DIR = PROJECT_DIR / DATA
+
+MODEL_DIR = PROJECT_DIR / MODELS
+
+REPORT_DIR = PROJECT_DIR / REPORTS
+
+for folder in [LOG_DIR, DATA_DIR, MODEL_DIR, MODEL_DIR]:
+    if not folder.exists():
+        folder.mkdir(exist_ok=True, parents=True)
+
 
 class DataSetEnum(Enum):
     KarateClub = "KarateClub"
