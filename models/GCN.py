@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
 
-# from iid.utils import reconstruct_loss
+from utils import reconstruct_loss
 
 # analytical_geometry_loss
 from utils.logger import get_logger
