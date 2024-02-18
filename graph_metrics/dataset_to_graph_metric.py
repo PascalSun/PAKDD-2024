@@ -6,18 +6,18 @@ from neo4j import GraphDatabase
 from torch_geometric.data import Data
 from torch_geometric.utils import is_undirected
 
-from src.iid.dataset.load_datasets import load_dataset
-from src.iid.graph_metrics.cypher_queries import (
+from dataset.load_datasets import load_dataset
+from graph_metrics.cypher_queries import (
     AVERAGE_IN_OUT_DEGREE_QUERY,
     IN_OUT_DEGREE_QUERY,
     SUPER_GRAPH_DEGREE,
     SUPER_GRAPH_QUERY,
 )
-from src.iid.graph_metrics.models import GraphEngine
-from src.iid.graph_metrics.parser import parse_args
-from src.utils.constants import REPORT_DIR
-from src.utils.logger import get_logger
-from src.utils.timer import timer
+from graph_metrics.models import GraphEngine
+from graph_metrics.parser import parse_args
+from utils.constants import REPORT_DIR
+from utils.logger import get_logger
+from utils.timer import timer
 
 
 class DatasetToCypher:
@@ -29,13 +29,13 @@ class DatasetToCypher:
     """
 
     def __init__(
-        self,
-        host: str = "localhost",
-        port: int = 7687,
-        user: str = "neo4j",
-        password: str = "verystrongpassword",
-        clean_db: bool = True,
-        graph_engine: str = GraphEngine.MEMGRAPH.value,
+            self,
+            host: str = "localhost",
+            port: int = 7687,
+            user: str = "neo4j",
+            password: str = "verystrongpassword",
+            clean_db: bool = True,
+            graph_engine: str = GraphEngine.MEMGRAPH.value,
     ):
         self.neo4j_driver = None
         self.mem_graph_driver = None
@@ -195,8 +195,8 @@ if __name__ == "__main__":
     dataset_to_cypher.logger.info(f"Loaded dataset {args}")
     if args.clean_db:
         with timer(
-            dataset_to_cypher.logger,
-            f"Load graph to {args.dataset}/{args.graph_engine}",
+                dataset_to_cypher.logger,
+                f"Load graph to {args.dataset}/{args.graph_engine}",
         ):
             dataset_to_cypher.execute_load_graph_query(dataset[0])
 

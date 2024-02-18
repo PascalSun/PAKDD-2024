@@ -17,7 +17,7 @@ def parse_args(arguments: Optional[List[str]] = None):
     :param arguments:
     :return:
     """
-    parser = argparse.ArgumentParser(description="PhD IID")
+    parser = argparse.ArgumentParser(description="PAKDD 2024")
     parser.add_argument(
         "-d", "--dataset", default="Cora", type=str, help="dataset name"
     )

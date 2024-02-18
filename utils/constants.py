@@ -11,7 +11,7 @@ DATA = "data"
 REPORTS = "reports"
 MODELS = "models"
 
-PROJECT_DIR: Path = Path(os.path.dirname(os.path.abspath(__file__))).parent.parent
+PROJECT_DIR: Path = Path(os.path.dirname(os.path.abspath(__file__))).parent
 
 TEMP_OUTPUT_DIR = Path("/tmp")
 

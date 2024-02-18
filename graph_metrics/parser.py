@@ -1,7 +1,7 @@
 import argparse
 from typing import List, Optional
 
-from src.iid.graph_metrics.models import GraphEngine
+from graph_metrics.models import GraphEngine
 
 
 def parse_args(arguments: Optional[List[str]] = None):

@@ -1,2 +1,6 @@
 .idea
 __pycache__/
+logs
+.DS_Store
+reports
+data

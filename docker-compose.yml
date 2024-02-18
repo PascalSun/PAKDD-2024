@@ -1,0 +1,71 @@
+version: "3"
+
+services:
+  graph_db:
+    image: neo4j:5.8.0
+    volumes:
+      - graph_data:/data
+      - graph_plugin:/plugins
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      # user is neo4j
+      - NEO4J_AUTH=neo4j/verystrongpassword
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+      - NEO4J_dbms_security_allow__csv__import__from__file__urls=true
+      - NEO4J_PLUGINS=["apoc"]
+    container_name: stkg_graph_db
+    networks:
+      stkg:
+        aliases:
+          - graph-db.local
+
+  mem_graph_db:
+    image: memgraph/memgraph-platform:latest
+    ports:
+      - "7688:7687"
+      - "7445:7444"
+      - "3000:3000"
+    container_name: stkg_mem_graph_db
+    networks:
+      stkg:
+        aliases:
+          - mem-graph-db.local
+    volumes:
+      - mg_lib:/var/lib/memgraph
+      - mg_log:/var/log/memgraph
+      - mg_etc:/etc/memgraph
+    environment:
+      - MEMGRAPH="--log-level=TRACE"
+      - MGCONSOLE="--username memgraph --password verystrongpassword"
+    entrypoint: [ "/usr/bin/supervisord" ]
+
+  db:
+    image: postgis/postgis
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=stkg
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=stkgpw
+    ports:
+      - "5432:5432"
+    networks:
+      stkg:
+        aliases:
+          - stkg-db.local
+    container_name: stkg_db
+
+volumes:
+  graph_data:
+  graph_plugin:
+  pg_data:
+  mg_lib:
+  mg_log:
+  mg_etc:
+
+networks:
+  stkg: null

@@ -2,7 +2,7 @@ import pandas as pd
 import torch
 from torch_geometric.nn import GAE  # noqa Graph Autoencoder
 
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger()
 

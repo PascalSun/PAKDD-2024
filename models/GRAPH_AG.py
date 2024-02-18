@@ -3,8 +3,7 @@ from typing import List
 import pandas as pd
 import torch
 
-from src.iid.utils.loss import analytical_geometry_loss
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger()
 
@@ -44,7 +43,8 @@ class GraphAGEmb(torch.nn.Module):
             self.train()
             optimizer.zero_grad()
             out = self(data.x, data.edge_index)
-            loss = analytical_geometry_loss(out, data.edge_index)
+            loss = 0
+            # loss = analytical_geometry_loss(out, data.edge_index)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(self.parameters(), max_norm=1.0)
             optimizer.step()

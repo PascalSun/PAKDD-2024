@@ -5,10 +5,10 @@ import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
 
-from src.iid.utils import reconstruct_loss
+# from iid.utils import reconstruct_loss
 
 # analytical_geometry_loss
-from src.utils.logger import get_logger
+from utils.logger import get_logger
 
 logger = get_logger()
 
@@ -58,7 +58,7 @@ class GCNTask(torch.nn.Module):
 
 class GCNEmb(torch.nn.Module):
     def __init__(
-        self, in_channels: int, hidden_layer_dim: List[int], out_channels: int
+            self, in_channels: int, hidden_layer_dim: List[int], out_channels: int
     ):
         super(GCNEmb, self).__init__()
         self.conv_layers = torch.nn.ModuleList()

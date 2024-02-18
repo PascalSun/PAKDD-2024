@@ -17,15 +17,13 @@ from plotly.subplots import make_subplots
 from sklearn.manifold import TSNE
 from torch_geometric.utils import to_networkx
 from sklearn.tree import DecisionTreeClassifier, plot_tree
-from src.iid.dataset.load_datasets import load_dataset
-from src.iid.utils.constants import DataSetEnum
-from src.utils.constants import REPORT_DIR
-from src.utils.logger import get_logger
-from src.utils.timer import timer
+from dataset.load_datasets import load_dataset
+from utils.constants import DataSetEnum
+from utils.constants import REPORT_DIR
+from utils.logger import get_logger
+from utils.timer import timer
 
 HOMO_DATASETS = [
-    "KarateClub",
-    "Mitcham",
     "PubMed",
     "CiteSeer",
     "Cora",
@@ -215,7 +213,7 @@ class DatasetNetworkMetrics:
         self.graph = graph
         self.dataset_name = name
         self.logger = get_logger()
-        self.report_dir = REPORT_DIR / "iid" / name / "network_metrics"
+        self.report_dir = REPORT_DIR / name / "network_metrics"
         self.report_dir.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
@@ -224,11 +222,11 @@ class DatasetNetworkMetrics:
     ) -> Tuple[list, Optional[pd.DataFrame]]:
         if update:
             df.to_csv(
-                REPORT_DIR / "iid" / "summary" / "summary_network_metrics.csv",
+                REPORT_DIR / "summary" / "summary_network_metrics.csv",
                 index=False,
             )
             return df["dataset"].tolist(), df
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_csv = summary_folder / "summary_network_metrics.csv"
         if not summary_csv.exists():
             with open(summary_csv, "w", newline="") as f:
@@ -316,7 +314,7 @@ class DatasetNetworkMetrics:
         -------
 
         """
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_folder.mkdir(parents=True, exist_ok=True)
         summary_csv = summary_folder / "summary_network_metrics.csv"
 
@@ -606,7 +604,14 @@ class DatasetNetworkMetrics:
 
         # Calculate the second moment
         second_moment = sum(k ** 2 for k in degrees) / len(degrees)
-        df.loc[df["dataset"] == self.dataset_name, "k2"] = second_moment
+        # df.loc[df["dataset"] == self.dataset_name, "k2"] = second_moment
+        matching_rows = df[df["dataset"] == self.dataset_name]
+        if len(matching_rows) == 1:
+            df.loc[df["dataset"] == self.dataset_name, "k2"] = second_moment
+        else:
+            # Handle the case where the assumption does not hold, maybe raise an error or log a warning
+            raise ValueError("Expected exactly one matching row, found {}".format(len(matching_rows)))
+
         self.exist_datasets(update=True, df=df)
 
     def calculate_p_k_max(self):
@@ -837,7 +842,7 @@ class DatasetNetworkMetrics:
         Returns
         -------
         """
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         k_ln_n_summary_folder = summary_folder / "k_ln"
         k_ln_n_summary_folder.mkdir(parents=True, exist_ok=True)
         summary_csv = summary_folder / "summary_network_metrics.csv"
@@ -975,7 +980,7 @@ class DatasetNetworkMetrics:
         """
         plot k and standard deviation, and also in the plot, have a dashed line about the standard_deviation = ⟨k⟩^(1/2)
         """
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_csv = summary_folder / "summary_network_metrics.csv"
         k_ln_n_summary_folder = summary_folder / "k_ln"
         k_ln_n_summary_folder.mkdir(parents=True, exist_ok=True)
@@ -1033,7 +1038,7 @@ class DatasetNetworkMetrics:
 
         """
 
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_csv = summary_folder / "summary_network_metrics.csv"
         summary_csv_scaled = summary_folder / "summary_network_metrics_min_max.csv"
         tsne_summary_folder = summary_folder / "tsne"
@@ -1458,7 +1463,7 @@ class DatasetNetworkMetrics:
     @staticmethod
     def explore_metric_distribution():
         # read the summary csv again
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_csv = summary_folder / "summary_network_metrics.csv"
         if not summary_csv.exists():
             raise ValueError(f"Summary csv {summary_csv} does not exist")
@@ -1618,7 +1623,7 @@ class DatasetNetworkMetrics:
 
     @staticmethod
     def plot_selected_metrics():
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_csv_scaled = summary_folder / "summary_network_metrics_min_max.csv"
         summary_metrics_distribution_folder = summary_folder / "metrics_distribution"
         # plot tsne with these row combinations
@@ -1676,7 +1681,7 @@ class DatasetNetworkMetrics:
     @staticmethod
     def fix_k():
         # read the summary csv again
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_csv = summary_folder / "summary_network_metrics.csv"
         if not summary_csv.exists():
             raise ValueError(f"Summary csv {summary_csv} does not exist")
@@ -1747,7 +1752,7 @@ class DatasetNetworkMetrics:
                                   'HeterophilousGraphDataset_Minesweeper': 'circle', 'Cora_Full': 'circle',
                                   'CitationsFull_Cora_ML': 'circle', 'CitationsFull_Cora': 'circle'}
 
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_csv_scaled = summary_folder / "summary_network_metrics_min_max.csv"
 
         row_columns_combination = ["num_edges", "num_classes", "average_shortest_path_length"]
@@ -1798,8 +1803,8 @@ class DatasetNetworkMetrics:
         plt.text(0.5, 0.5, "cross is not beneficial, circle is beneficial", fontsize=14,
                  transform=plt.gcf().transFigure)
         # save pdf and png
-        fig.savefig(REPORT_DIR / "iid" / "summary" / "network_metrics_decision_tree.pdf")
-        fig.savefig(REPORT_DIR / "iid" / "summary" / "network_metrics_decision_tree.png")
+        fig.savefig(REPORT_DIR / "summary" / "network_metrics_decision_tree.pdf")
+        fig.savefig(REPORT_DIR / "summary" / "network_metrics_decision_tree.png")
         logger.info(f"wrong prediction: {df_features[y != y_pred][['dataset', 'symbol']]}")
 
     @staticmethod
@@ -1819,7 +1824,7 @@ class DatasetNetworkMetrics:
                          'AMAZON_COMPUTERS': 'circle', 'CitationsFull_Cora': 'circle',
                          'CitationsFull_Cora_ML': 'circle', 'Cora_Full': 'circle', 'CitationsFull_DBLP': 'circle'}
 
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_csv_scaled = summary_folder / "summary_network_metrics_min_max.csv"
 
         row_columns_combination = ["num_edges", "num_classes", "average_shortest_path_length"]
@@ -1869,8 +1874,8 @@ class DatasetNetworkMetrics:
         plt.text(0.5, 0.5, "cross is node2vec not , circle is beneficial", fontsize=14,
                  transform=plt.gcf().transFigure)
         # save pdf and png
-        fig.savefig(REPORT_DIR / "iid" / "summary" / "network_metrics_decision_tree_node2vec.pdf")
-        fig.savefig(REPORT_DIR / "iid" / "summary" / "network_metrics_decision_tree_node2vec.png")
+        fig.savefig(REPORT_DIR / "summary" / "network_metrics_decision_tree_node2vec.pdf")
+        fig.savefig(REPORT_DIR / "summary" / "network_metrics_decision_tree_node2vec.png")
         logger.info(f"wrong prediction: {df_features[y != y_pred][['dataset', 'symbol']]}")
 
     @staticmethod
@@ -1973,7 +1978,7 @@ class DatasetNetworkMetrics:
         # For instance, df_features_q1 and df_features_q2 could be your datasets for question 1 and question 2
         # df_features_q1 = pd.read_csv('your_dataset_q1.csv')
         # df_features_q2 = pd.read_csv('your_dataset_q2.csv')
-        summary_folder = REPORT_DIR / "iid" / "summary"
+        summary_folder = REPORT_DIR / "summary"
         summary_csv_scaled = summary_folder / "summary_network_metrics_min_max.csv"
 
         row_columns_combination = ["num_edges", "num_classes", "average_shortest_path_length"]
@@ -2023,86 +2028,86 @@ class DatasetNetworkMetrics:
 if __name__ == "__main__":
     logger = get_logger("network_metrics")
 
-    # existing_datasets, summary_df = DatasetNetworkMetrics.exist_datasets()
-    # logger.info(f"Existing datasets: {existing_datasets}")
-    # success_datasets = []
-    #
-    # for dataset_enum in HOMO_DATASETS:
-    #     if type(dataset_enum) is DataSetEnum:
-    #         dataset_name = dataset_enum.value
-    #     else:
-    #         dataset_name = dataset_enum
-    #     try:
-    #         logger.info(f"Calculating network metrics for {dataset_name}")
-    #         logger.info(f"Dataset existing: {dataset_name in existing_datasets}")
-    #         to_be_calculated = DatasetNetworkMetrics.require_calculations(
-    #             name=dataset_name, df=summary_df
-    #         )
-    #         if not len(to_be_calculated):
-    #             continue
-    #         with timer(logger, f"load dataset: {dataset_name}"):
-    #             dataset = load_dataset(dataset_name)
-    #         with timer(logger, f"to networkx: {dataset_name}"):
-    #             data_graph = to_networkx(
-    #                 dataset.data, to_undirected=not dataset.data.is_directed()
-    #             )
-    #         dataset_network_metric = DatasetNetworkMetrics(dataset_name, data_graph)
-    #
-    #         if "graph_attribute" in to_be_calculated:
-    #             with timer(logger, "Calculate graph attributes"):
-    #                 dataset_network_metric.calculate_graph_attribute()
-    #         if "calculate_second_moment" in to_be_calculated:
-    #             with timer(logger, "Calculate second moment"):
-    #                 dataset_network_metric.calculate_second_moment()
-    #         if "calculate_degree_exponent" in to_be_calculated:
-    #             with timer(logger, "Calculate degree exponent"):
-    #                 dataset_network_metric.calculate_degree_exponent()
-    #         if "calculate_gamma_regime" in to_be_calculated:
-    #             with timer(logger, "Calculate gamma regime"):
-    #                 dataset_network_metric.calculate_gamma_regime()
-    #         if "calculate_k_max" in to_be_calculated:
-    #             with timer(logger, "Calculate k_max"):
-    #                 dataset_network_metric.calculate_p_k_max()
-    #         if "calculate_average_shortest_path_length" in to_be_calculated:
-    #             try:
-    #                 with timer(logger, "Calculate average shortest path length"):
-    #                     dataset_network_metric.calculate_average_shortest_path_length()
-    #             except Exception as e_path:
-    #                 logger.error(str(e_path))
-    #         if "calculate_diameter" in to_be_calculated:
-    #             with timer(logger, "Calculate diameter"):
-    #                 dataset_network_metric.calculate_diameter()
-    #         if "calculate_num_classes" in to_be_calculated:
-    #             with timer(logger, "Calculate num classes"):
-    #                 dataset_network_metric.calculate_num_classes(dataset)
-    #
-    #         if "calculate_num_features" in to_be_calculated:
-    #             with timer(logger, "Calculate num features"):
-    #                 dataset_network_metric.calculate_num_features(dataset)
-    #         success_datasets.append(dataset_name)
-    #     except Exception as e:
-    #         logger.error(f"Error while calculating network metrics for {dataset_name}")
-    #         logger.exception(e)
-    #
-    # logger.info(f"Successfully calculated network metrics for {success_datasets}")
-    #
-    # # fix the k, recalculate it by 2*E/N
-    # DatasetNetworkMetrics.fix_k()
-    #
-    # # plot the k and ln n
-    # DatasetNetworkMetrics.plot_summary_k_and_ln_n_random_network()
-    #
-    # # plot the k and standard deviation against random network model
-    # DatasetNetworkMetrics.plot_summary_k_and_std_random_network()
-    #
-    # # plot tsne for the summary_network_metrics.csv
-    # DatasetNetworkMetrics.plot_summary_tsne()
-    #
-    # # explore each metric distribution for all dataset, and then do min-max normalization
-    # DatasetNetworkMetrics.explore_metric_distribution()
-    #
-    # # plot the selected metrics for each dataset
-    # DatasetNetworkMetrics.plot_selected_metrics()
+    existing_datasets, summary_df = DatasetNetworkMetrics.exist_datasets()
+    logger.info(f"Existing datasets: {existing_datasets}")
+    success_datasets = []
+
+    for dataset_enum in HOMO_DATASETS:
+        if type(dataset_enum) is DataSetEnum:
+            dataset_name = dataset_enum.value
+        else:
+            dataset_name = dataset_enum
+        try:
+            logger.info(f"Calculating network metrics for {dataset_name}")
+            logger.info(f"Dataset existing: {dataset_name in existing_datasets}")
+            to_be_calculated = DatasetNetworkMetrics.require_calculations(
+                name=dataset_name, df=summary_df
+            )
+            if not len(to_be_calculated):
+                continue
+            with timer(logger, f"load dataset: {dataset_name}"):
+                dataset = load_dataset(dataset_name)
+            with timer(logger, f"to networkx: {dataset_name}"):
+                data_graph = to_networkx(
+                    dataset.data, to_undirected=not dataset.data.is_directed()
+                )
+            dataset_network_metric = DatasetNetworkMetrics(dataset_name, data_graph)
+
+            if "graph_attribute" in to_be_calculated:
+                with timer(logger, "Calculate graph attributes"):
+                    dataset_network_metric.calculate_graph_attribute()
+            if "calculate_second_moment" in to_be_calculated:
+                with timer(logger, "Calculate second moment"):
+                    dataset_network_metric.calculate_second_moment()
+            if "calculate_degree_exponent" in to_be_calculated:
+                with timer(logger, "Calculate degree exponent"):
+                    dataset_network_metric.calculate_degree_exponent()
+            if "calculate_gamma_regime" in to_be_calculated:
+                with timer(logger, "Calculate gamma regime"):
+                    dataset_network_metric.calculate_gamma_regime()
+            if "calculate_k_max" in to_be_calculated:
+                with timer(logger, "Calculate k_max"):
+                    dataset_network_metric.calculate_p_k_max()
+            if "calculate_average_shortest_path_length" in to_be_calculated:
+                try:
+                    with timer(logger, "Calculate average shortest path length"):
+                        dataset_network_metric.calculate_average_shortest_path_length()
+                except Exception as e_path:
+                    logger.error(str(e_path))
+            if "calculate_diameter" in to_be_calculated:
+                with timer(logger, "Calculate diameter"):
+                    dataset_network_metric.calculate_diameter()
+            if "calculate_num_classes" in to_be_calculated:
+                with timer(logger, "Calculate num classes"):
+                    dataset_network_metric.calculate_num_classes(dataset)
+
+            if "calculate_num_features" in to_be_calculated:
+                with timer(logger, "Calculate num features"):
+                    dataset_network_metric.calculate_num_features(dataset)
+            success_datasets.append(dataset_name)
+        except Exception as e:
+            logger.error(f"Error while calculating network metrics for {dataset_name}")
+            logger.exception(e)
+
+    logger.info(f"Successfully calculated network metrics for {success_datasets}")
+
+    # fix the k, recalculate it by 2*E/N
+    DatasetNetworkMetrics.fix_k()
+
+    # plot the k and ln n
+    DatasetNetworkMetrics.plot_summary_k_and_ln_n_random_network()
+
+    # plot the k and standard deviation against random network model
+    DatasetNetworkMetrics.plot_summary_k_and_std_random_network()
+
+    # plot tsne for the summary_network_metrics.csv
+    DatasetNetworkMetrics.plot_summary_tsne()
+
+    # explore each metric distribution for all dataset, and then do min-max normalization
+    DatasetNetworkMetrics.explore_metric_distribution()
+
+    # plot the selected metrics for each dataset
+    DatasetNetworkMetrics.plot_selected_metrics()
     DatasetNetworkMetrics.classify_need_graph()
     DatasetNetworkMetrics.classify_node2vec()
     DatasetNetworkMetrics.check_list_include_relations()

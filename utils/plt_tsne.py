@@ -4,19 +4,19 @@ from typing import Optional
 import plotly.graph_objects as go
 from sklearn.manifold import TSNE
 
-from src.utils.logger import get_logger
-from src.utils.timer import timer
+from utils.logger import get_logger
+from utils.timer import timer
 
 logger = get_logger()
 
 
 def plot_tsne(
-    emb_df,
-    label_field_name: str = "y",
-    title: str = "TSNE Plot",
-    filename: Optional[Path] = None,
-    label_int_2_str: Optional[dict] = None,
-    show_in_web: bool = False,
+        emb_df,
+        label_field_name: str = "y",
+        title: str = "TSNE Plot",
+        filename: Optional[Path] = None,
+        label_int_2_str: Optional[dict] = None,
+        show_in_web: bool = False,
 ):
     """
     :param emb_df:

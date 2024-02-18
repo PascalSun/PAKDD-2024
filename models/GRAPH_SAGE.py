@@ -5,19 +5,19 @@ import torch
 import torch.nn.functional as F  # noqa
 from torch_geometric.nn import SAGEConv  # noqa
 
-from src.iid.utils import reconstruct_loss
-from src.utils.logger import get_logger
+from utils import reconstruct_loss
+from utils.logger import get_logger
 
 logger = get_logger()
 
 
 class GraphSAGETask(torch.nn.Module):
     def __init__(
-        self,
-        in_channels: int,
-        hidden_channels: List[int],
-        out_channels: int,
-        aggr: str = "max",
+            self,
+            in_channels: int,
+            hidden_channels: List[int],
+            out_channels: int,
+            aggr: str = "max",
     ):
         super(GraphSAGETask, self).__init__()
         self.conv_layers = torch.nn.ModuleList()
@@ -67,11 +67,11 @@ class GraphSAGETask(torch.nn.Module):
 
 class GraphSAGEEmb(torch.nn.Module):
     def __init__(
-        self,
-        in_channels: int,
-        hidden_channels: List[int],
-        out_channels: int,
-        aggr: str = "max",
+            self,
+            in_channels: int,
+            hidden_channels: List[int],
+            out_channels: int,
+            aggr: str = "max",
     ):
         super(GraphSAGEEmb, self).__init__()
         if len(hidden_channels) == 0:
@@ -105,7 +105,7 @@ class GraphSAGEEmb(torch.nn.Module):
         return x
 
     def fit(
-        self, data, epochs, optimizer: Optional[torch.optim.Optimizer] = None
+            self, data, epochs, optimizer: Optional[torch.optim.Optimizer] = None
     ) -> pd.DataFrame:
         if not optimizer:
             optimizer = torch.optim.Adam(self.parameters(), lr=0.01)
