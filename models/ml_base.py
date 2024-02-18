@@ -22,7 +22,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
-from traffic.config import RISK_LABELS
+from models.config import RISK_LABELS
 from utils.logger import get_logger
 from utils.timer import timer
 
@@ -205,7 +205,7 @@ class MLTrainBase:
             stds = clf["gridsearchcv"].cv_results_["std_test_score"]
 
             for mean, std, params in zip(
-                means, stds, clf["gridsearchcv"].cv_results_["params"]
+                    means, stds, clf["gridsearchcv"].cv_results_["params"]
             ):
                 logger.info("%0.3f (+/-%0.03f) for %r" % (mean, std * 2, params))
 
@@ -303,12 +303,12 @@ class MLTrainBase:
         return grid_search.best_params_
 
     def plt_3_confusion_matrix(
-        self,
-        models: list,
-        title: str,
-        filename: Optional[Path] = None,
-        plot_it: bool = True,
-        balanced_ac: bool = False,
+            self,
+            models: list,
+            title: str,
+            filename: Optional[Path] = None,
+            plot_it: bool = True,
+            balanced_ac: bool = False,
     ) -> list:
         """
         plot three confusion matrix in the same image for SVM/KNN/RF
@@ -551,13 +551,13 @@ class MLTrainBase:
         return metrics
 
     def train(
-        self,
-        grid_search: bool = False,
-        svm_param: Optional[dict] = None,
-        knn_param: Optional[dict] = None,
-        rf_param: Optional[dict] = None,
-        *args,
-        **kwargs,
+            self,
+            grid_search: bool = False,
+            svm_param: Optional[dict] = None,
+            knn_param: Optional[dict] = None,
+            rf_param: Optional[dict] = None,
+            *args,
+            **kwargs,
     ) -> list:
         """
         main function will be called when we call train in command line

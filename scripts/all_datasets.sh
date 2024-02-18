@@ -3,7 +3,7 @@
 datasets=(
 #    "KarateClub"
 #    "Mitcham"
-    "PubMed"
+#    "PubMed"
     "CiteSeer"
     "Cora"
     "AMAZON_COMPUTERS"
