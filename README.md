@@ -29,4 +29,23 @@ conda install pyg -c pyg # install pytorch geometric
 pip install -r requirements.txt
 ```
 
+3. Calculate the network characteristics
+   First start the docker container with the following command:
+
+```bash
+docker-compose up
+```
+
+Then run the following command to calculate the network characteristics:
+
+```bash
+python3 -m graph_metrics.dataset_network_metrics
+```
+
+4. Run the experiments
+
+```bash
+bash ./scripts/all_datasets.sh
+```
+
 ## Citation
