@@ -2,7 +2,7 @@
 
 This is the Code and Datasets for the paper
 
-**"Are Graph Embeddings the Panacea? – an Empirical Survey from the Data Fitness Perspective"** 
+**"Are Graph Embeddings the Panacea? – an Empirical Survey from the Data Fitness Perspective"**
 
 accepted by PAKDD 2024.
 
@@ -54,15 +54,13 @@ We have used the following datasets in our experiments:
 
 Similarity matrices for: F1 score (left), Accuracy score (middle), Network Parameters (|E|, K, L) (right).
 
-![Similarity matrices for F1 score](imgs/similarity_matrix_macro_f_beta_score.jpg)
-*F1 score*
 
-![Similarity matrices for Accuracy score](imgs/similarity_matrix_accuracy_score.jpg)
-*Accuracy score*
 
-![Similarity matrices for Network Parameters (|E|, K, L)](imgs/similarity_matrix_network_ln_num_edges_ln_num_classes_ln_average_shortest_path_length.jpg)
-*Network Parameters (|E|, K, L)*
-
+<p align="center">
+  <img src="imgs/similarity_matrix_macro_f_beta_score.jpg" alt="Similarity matrices for F1 score" width="30%" />
+  <img src="imgs/similarity_matrix_accuracy_score.jpg" alt="Similarity matrices for Accuracy score" width="30%" />
+  <img src="imgs/similarity_matrix_network_ln_num_edges_ln_num_classes_ln_average_shortest_path_length.jpg" alt="Similarity matrices for Network Parameters (|E|, K, L)" width="30%" />
+</p>
 
 ## Reproduce the Results
 
