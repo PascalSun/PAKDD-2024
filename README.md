@@ -7,8 +7,41 @@ Fitness Perspective" accepted by PAKDD 2024.
 
 We have used the following datasets in our experiments:
 
-- `cora`
-- `citeseer`
+    "Actor"
+    "AMAZON_COMPUTERS"
+    "AMAZON_PHOTO"
+    "AttributedGraphDataset_BlogCatalog"
+    "AttributedGraphDataset_CiteSeer"
+    "AttributedGraphDataset_Cora"
+    "AttributedGraphDataset_Flickr"
+    "AttributedGraphDataset_Pubmed"
+    "AttributedGraphDataset_Wiki"
+    "CitationsFull_CiteSeer"
+    "CitationsFull_Cora"
+    "CitationsFull_Cora_ML"
+    "CitationsFull_DBLP"
+    "CitationsFull_PubMed"
+    "CiteSeer"
+    "Coauther_CS"
+    "Coauther_Physics"
+    "Cora"
+    "Cora_Full"
+    "GitHub"
+    "HeterophilousGraphDataset_Amazon_ratings"
+    "HeterophilousGraphDataset_Minesweeper"
+    "HeterophilousGraphDataset_Questions"
+    "HeterophilousGraphDataset_Roman_empire"
+    "HeterophilousGraphDataset_Tolokers"
+    "PubMed"
+    "TWITCH_DE"
+    "TWITCH_EN"
+    "TWITCH_ES"
+    "TWITCH_FR"
+    "TWITCH_PT"
+    "TWITCH_RU"
+    "WEBKB_Cornell"
+    "WEBKB_Texas"
+    "WEBKB_Wisconsin"
 
 ## Algorithms
 
