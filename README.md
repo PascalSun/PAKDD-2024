@@ -43,9 +43,9 @@ We have used the following datasets in our experiments:
     "WEBKB_Texas"
     "WEBKB_Wisconsin"
 
-## Algorithms
+## Experiment Design
 
-We have experiment on 
+![](./imgs/experiment-design.drawio_page-0001.jpg)
 
 ## Results
 
