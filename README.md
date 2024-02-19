@@ -1,7 +1,10 @@
 # PAKDD
 
-This is the Code and Datasets for the paper "Are Graph Embeddings the Panacea? – an Empirical Survey from the Data
-Fitness Perspective" accepted by PAKDD 2024.
+This is the Code and Datasets for the paper
+
+**"Are Graph Embeddings the Panacea? – an Empirical Survey from the Data Fitness Perspective"** 
+
+accepted by PAKDD 2024.
 
 ## Datasets
 
@@ -48,6 +51,18 @@ We have used the following datasets in our experiments:
 ![](./imgs/experiment-design.drawio_page-0001.jpg)
 
 ## Results
+
+Similarity matrices for: F1 score (left), Accuracy score (middle), Network Parameters (|E|, K, L) (right).
+
+![Similarity matrices for F1 score](imgs/similarity_matrix_macro_f_beta_score.jpg)
+*F1 score*
+
+![Similarity matrices for Accuracy score](imgs/similarity_matrix_accuracy_score.jpg)
+*Accuracy score*
+
+![Similarity matrices for Network Parameters (|E|, K, L)](imgs/similarity_matrix_network_ln_num_edges_ln_num_classes_ln_average_shortest_path_length.jpg)
+*Network Parameters (|E|, K, L)*
+
 
 ## Reproduce the Results
 
