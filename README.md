@@ -45,6 +45,8 @@ We have used the following datasets in our experiments:
 
 ## Algorithms
 
+We have experiment on 
+
 ## Results
 
 ## Reproduce the Results
@@ -53,33 +55,28 @@ We have used the following datasets in our experiments:
 
 1. Clone the repository
 2. Setup the conda environment
-
-```bash
-conda create -n PAKDD-481 python=3.8
-conda activate PAKDD-481
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 # install pytorch
-pip install git+https://github.com/pyg-team/pytorch_geometric.git  # install pytorch geometric
-pip install pyg_lib torch_scatter==1.4.0 torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.2.0+cpu.html  
-pip install -r requirements.txt
-```
+   ```bash
+   conda create -n PAKDD-481 python=3.8
+   conda activate PAKDD-481
+   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 # install pytorch
+   pip install git+https://github.com/pyg-team/pytorch_geometric.git  # install pytorch geometric
+   pip install pyg_lib torch_scatter==1.4.0 torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.2.0+cpu.html  
+   pip install -r requirements.txt
+   ```
 
 3. Calculate the network characteristics
    First start the docker container with the following command:
-
-```bash
-docker-compose up
-```
-
-Then run the following command to calculate the network characteristics:
-
-```bash
-python3 -m graph_metrics.dataset_network_metrics
-```
+   ```bash
+   docker-compose up
+   ```
+   Then run the following command to calculate the network characteristics:
+   ```bash
+   python3 -m graph_metrics.dataset_network_metrics
+   ```
 
 4. Run the experiments
-
-```bash
-bash ./scripts/all_datasets.sh
-```
+   ```bash
+   bash ./scripts/all_datasets.sh
+   ```
 
 ## Citation

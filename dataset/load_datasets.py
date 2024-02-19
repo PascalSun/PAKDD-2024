@@ -23,8 +23,6 @@ from torch_geometric.datasets import (  # Entities
     Yelp,
 )
 
-from dataset.mitcham import MitchamDataset
-from dataset.osm import OSMDataset
 from graph_metrics.constants import DATASET_LABELS_MAPPING
 from utils.constants import DataSetEnum
 from utils.constants import DATA_DIR
@@ -49,10 +47,6 @@ def load_dataset(dataset_name: str) -> Dataset:  # noqa
         DataSetEnum.CiteSeer.value,
     ]:
         dataset = Planetoid(root=data_dir, name=dataset_name)
-    elif dataset_name == DataSetEnum.OSM.value:
-        dataset = OSMDataset(root=data_dir, name=dataset_name)
-    elif dataset_name == DataSetEnum.Mitcham.value:
-        dataset = MitchamDataset(root=data_dir, name=dataset_name)
     elif dataset_name == DataSetEnum.KarateClub.value:
         dataset = KarateClub()
         dataset.data.name = DataSetEnum.KarateClub.value

@@ -1229,11 +1229,11 @@ if __name__ == "__main__":
     iid_metrics_evaluation = IIDMetricsEvaluation()
     for dataset in DATASETS:
         iid_metrics_evaluation.gather_metrics(dataset)
-    # rank the models performance for each dataset
+    # rank the model performance for each dataset
     iid_metrics_evaluation.rank_models()
     # plot the performance for different models of each dataset.
     # and gather the similarity matrix for each pair of datasets
     iid_metrics_evaluation.plot_performance_distribution()
     iid_metrics_evaluation.plot_performance_spectrum()
     iid_metrics_evaluation.get_node2vec_metrics()
-    # iid_metrics_evaluation.get_need_graph()
+    iid_metrics_evaluation.get_need_graph()

@@ -17,11 +17,9 @@ from torch_geometric.nn import SAGEConv  # noqa
 from torch_geometric.utils import to_networkx
 
 from dataset.load_datasets import load_dataset
-from dataset.travel import TRAVELDataset
-from dimension_reduction import dimension_reduction
+
 from models.GAE import train_gae
 from models.GCN import GCNEmb, GCNTask
-from models.GRAPH_AG import GraphAGEmb
 from models.GRAPH_SAGE import GraphSAGEEmb, GraphSAGETask
 from models.ML import GraphMLTrain
 from utils import (
@@ -38,7 +36,6 @@ from utils.constants import (
     ModelsEnum,
     NNTypeEnum,
     Node2VecParamModeEnum,
-    TravelDatasetName,
 )
 from utils.split_data import split_data
 from utils.constants import DATA_DIR, REPORT_DIR
@@ -136,17 +133,6 @@ def process(arguments: argparse.Namespace):
             label_dict=label_dict,
             device=device,
         )
-    elif arguments.model == ModelsEnum.graph_ag.value:
-        metrics = handle_graph_ag_model(
-            arguments,
-            ml_default_settings=ml_default_settings,
-            dataset=dataset,
-            # dataset_with_centrality=dataset_with_centrality,
-            report_dir=report_dir,
-            label_list=label_list,
-            label_dict=label_dict,
-            device=device,
-        )
     else:
         raise ValueError(f"Unknown model: {arguments.model}")
 
@@ -183,22 +169,8 @@ def init_setup(arguments: argparse.Namespace):
 
 
 def load_and_preprocess_data(data_dir, dataset_name, arguments):  # noqa
-    # dataset
-    if dataset_name.lower() == DataSetEnum.Travel.value.lower():
-        # verify the arguments.travel_dataset
-        if len(arguments.travel_dataset.split("_")) == 1:
-            city = None
-            state = arguments.travel_dataset
-        else:
-            city, state = arguments.travel_dataset.split("_")
-        TravelDatasetName(state=state, city=city)
 
-        dataset = TRAVELDataset(
-            root=data_dir, name=arguments.travel_dataset, task=arguments.travel_task
-        )
-        dataset.data.labels = {i: str(i) for i in enumerate(dataset.data.y)}
-
-    elif dataset_name.lower() == DataSetEnum.AttributedGraphDataset_PPI.value.lower():
+    if dataset_name.lower() == DataSetEnum.AttributedGraphDataset_PPI.value.lower():
         dataset = load_dataset(dataset_name)
         # TODO: this is a multi-class task
         dataset.data.labels = {i: str(i) for i in enumerate(dataset.data.y.tolist())}
@@ -932,14 +904,6 @@ def handle_node2vec_model(
             label_int_2_str=label_dict,
         )
         # train classification
-        if arguments.dim_reduction:
-            node2vec_embeddings_df = dimension_reduction(
-                arguments,
-                dataset,
-                embedding_df=node2vec_embeddings_df,
-                label_dict=label_dict,
-                report_dir=report_dir / arguments.model / "DR",
-            )
         node2vec_ml_model = GraphMLTrain(
             node2vec_embeddings_df,
             y_field_name="y",
@@ -1046,18 +1010,6 @@ def handle_gae_model(
                     label_int_2_str=label_dict,
                 )
 
-            # if we want to compress the embeddings
-            if arguments.dim_reduction:
-                gae_gcn_embeddings = dimension_reduction(
-                    arguments,
-                    dataset,
-                    embedding_df=gae_gcn_embeddings,
-                    label_dict=label_dict,
-                    report_dir=report_dir
-                               / arguments.model
-                               / arguments.gae_encoder
-                               / "DR",
-                )
             # save the embedding to files
             logger.info("saving the csv")
             logger.critical(
@@ -1159,18 +1111,6 @@ def handle_gae_model(
                 device=device,
                 epochs=arguments.epochs,
             )
-            # if we want to compress the embeddings
-            if arguments.dim_reduction:
-                gae_graph_sage_embeddings = dimension_reduction(
-                    arguments,
-                    dataset,
-                    embedding_df=gae_graph_sage_embeddings,
-                    label_dict=label_dict,
-                    report_dir=report_dir
-                               / arguments.model
-                               / arguments.gae_encoder
-                               / "DR",
-                )
             tsne_title = f"TSNE of {arguments.model.upper()}-{arguments.gae_encoder.upper()}-{arguments.gae_feature.upper()}-{emb_dim}"  # noqa
             plot_tsne(
                 emb_df=gae_graph_sage_embeddings,
@@ -1238,99 +1178,3 @@ def handle_gae_model(
             / f"{arguments.model}-{arguments.gae_encoder}-{arguments.gae_feature}-dim-metrics.json",
         )
         return gae_graph_sage_unsupervised_performance
-
-
-def handle_graph_ag_model(
-        arguments: argparse.Namespace,
-        ml_default_settings,
-        dataset,
-        # dataset_with_centrality,
-        report_dir,
-        label_list,
-        label_dict: Optional[dict] = None,
-        device: torch.device = torch.device("cpu"),
-):
-    logger.info("Model: Graph Analysis")
-    # add the dataset.data.x to the graph_ag_embeddings
-    # dataset.data.x to dataframe
-    feature_df = pd.DataFrame(dataset.data.x.detach().cpu().numpy())
-    feature_df["y"] = dataset.data.y.detach().cpu().numpy()
-    plot_tsne(
-        emb_df=feature_df,
-        title="Graph Feature TSNE",
-        filename=report_dir / arguments.model / f"{arguments.model}-feature.png",
-    )
-    # drop y from feature_df
-    feature_df = feature_df.drop(columns=["y"])
-
-    graph_ag_performance = {}
-    if arguments.start_dim > arguments.end_dim:
-        raise ValueError("Start dimension must be less than end dimension")
-    for dim in range(arguments.start_dim, arguments.end_dim):
-        graph_ag_model = GraphAGEmb(
-            in_channels=dataset.data.num_features,
-            hidden_channels=[32],
-            out_channels=dim,
-        )
-        graph_ag_model.to(device)
-        dataset.data.to(device)
-        graph_ag_embeddings = graph_ag_model.fit(dataset.data, epochs=arguments.epochs)
-
-        plot_tsne(
-            emb_df=graph_ag_embeddings,
-            title="Graph AG Model TSNE",
-            filename=report_dir / arguments.model / f"{arguments.model}-{dim}.png",
-            label_int_2_str=label_dict,
-        )
-        # concat with feature_df
-        graph_ag_embeddings = pd.concat([feature_df, graph_ag_embeddings], axis=1)
-        plot_tsne(
-            emb_df=graph_ag_embeddings,
-            title="Graph AG Model with feature TSNE",
-            filename=report_dir
-                     / arguments.model
-                     / f"{arguments.model}-feature-{dim}.png",
-            label_int_2_str=label_dict,
-        )
-        graph_age_ml_model = GraphMLTrain(
-            graph_ag_embeddings,
-            y_field_name="y",
-            svm_best_param=ml_default_settings.pretrain_svm_best_param,
-            knn_best_param=ml_default_settings.pretrain_knn_best_param,
-            rf_best_param=ml_default_settings.pretrain_rf_best_param,
-            oversampling=arguments.oversampling,
-            plot_it=arguments.plot_it,
-            risk_labels=label_list,
-        )
-        graph_age_ml_models = graph_age_ml_model.train(
-            grid_search=arguments.grid_search
-        )
-        graph_age_ml_model_metrics = graph_age_ml_model.plt_3_confusion_matrix(
-            graph_age_ml_models,
-            f"{arguments.model.upper()} Confusion Matrix",
-            plot_it=arguments.plot_it,
-            balanced_ac=arguments.balanced_ac,
-        )
-        # show the test performance for each category
-        graph_ag_performance[dim] = graph_age_ml_model_metrics
-    for metric_name in [
-        "accuracy_score",
-        "macro_precision",
-        "macro_recall",
-        "macro_f_beta_score",
-        "micro_precision",
-        "micro_recall",
-        "micro_f_beta_score",
-        "roc_auc",
-    ]:
-        plot_metrics(
-            metrics=graph_ag_performance,
-            title="Graph AG Model Performance vs Dimensionality",
-            x_title="Dimensionality",
-            y_title=metric_name.upper(),
-            metric_name=metric_name,
-            filename=report_dir
-                     / arguments.model
-                     / f"{arguments.model}-dim-{metric_name}.png",
-        )
-    return graph_ag_performance
