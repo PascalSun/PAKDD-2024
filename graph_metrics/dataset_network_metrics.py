@@ -97,7 +97,6 @@ finished_dataset = [
     "HeterophilousGraphDataset_Questions",
     "HeterophilousGraphDataset_Roman_empire",
     "HeterophilousGraphDataset_Tolokers",
-    # "Mitcham",
     "PubMed",
     "TWITCH_DE",
     "TWITCH_EN",
